@@ -73,6 +73,10 @@ public class MineButton extends JButton {
 		setIcon(icon);
 	}
 	
+	public boolean isClicked(){
+		return mIsClicked;
+	}
+	
 	public void setIsMine(boolean isMine) {
 		mIsMine = isMine;
 		if(mIsMine){

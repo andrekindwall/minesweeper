@@ -13,6 +13,10 @@ import javax.swing.JFrame;
 
 public class Board extends JFrame implements ActionListener{
 	
+	public interface GameFinishedListener{
+		public void gameOver();
+	}
+	
 	private static final long serialVersionUID = 9148170605818301711L;
 	
 	private ArrayList<MineButton> mButtons;
@@ -22,6 +26,9 @@ public class Board extends JFrame implements ActionListener{
 	private int mMines;
 	
 	private boolean mIsBoardGenerated;
+	private boolean mGameOver;
+	
+	private GameFinishedListener mListener;
 	
 	public Board(int rows, int columns, int mines) {
 		super("Minesweeper");
@@ -34,6 +41,10 @@ public class Board extends JFrame implements ActionListener{
 		createButtons();
 		
 		setSize(calculateBoardSize());
+	}
+	
+	public void setGameFinishedListener(GameFinishedListener listener){
+		mListener = listener;
 	}
 	
 	/**
@@ -116,6 +127,11 @@ public class Board extends JFrame implements ActionListener{
 		for(int checkedPosition : checkedPositions){
 			mButtons.get(checkedPosition).setClicked(true);
 		}
+		
+		if(mListener != null && button.isMine()){
+			mListener.gameOver();
+			mGameOver = true;
+		}
 	}
 	
 	private void chainMineButtonClick(int position, Set<Integer> checkedPositions){
@@ -185,7 +201,9 @@ public class Board extends JFrame implements ActionListener{
 		if(!mIsBoardGenerated){
 			generateBoard(button.getRow()*mColumns + button.getColumn());
 		}
-		clickedMineButton(button);
+		if(!mGameOver && !button.isClicked()){
+			clickedMineButton(button);
+		}
 	}
 	
 

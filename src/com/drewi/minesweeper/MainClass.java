@@ -1,8 +1,11 @@
 package com.drewi.minesweeper;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
-public class MainClass {
+import com.drewi.minesweeper.Board.GameFinishedListener;
+
+public class MainClass implements GameFinishedListener {
 	
 	private static final int ROWS = 16;
 	private static final int COLUMNS = 30;
@@ -20,6 +23,12 @@ public class MainClass {
 		mBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mBoard.setResizable(false);
 		mBoard.setVisible(true);
+		mBoard.setGameFinishedListener(this);
+	}
+
+	@Override
+	public void gameOver() {
+		JOptionPane.showMessageDialog(null, "Game Over");
 	}
 	
 }
