@@ -17,7 +17,7 @@ public class MineButton extends JButton {
 
 	private boolean mIsClicked;
 	private boolean mIsMine;
-	private int mMineSiblings;
+	private int mMineNeighbours;
 	
 	private ImageProps mClickedImageProps;
 	
@@ -26,12 +26,14 @@ public class MineButton extends JButton {
 		mColumn = column;
 		
 		setBounds(mColumn*SIZE, mRow*SIZE, SIZE, SIZE);
+		
+		setClicked(false);
 	}
 	
-	public void setMineSiblings(int mineSiblings){
-		mMineSiblings = mineSiblings;
+	public void setMineNeighbours(int mineNeighbours){
+		mMineNeighbours = mineNeighbours;
 		
-		switch(mineSiblings){
+		switch(mineNeighbours){
 		case 0:
 			mClickedImageProps = ImageProps.ZERO;
 			break;
@@ -82,8 +84,8 @@ public class MineButton extends JButton {
 		return mIsMine;
 	}
 	
-	public int getMineSiblings(){
-		return mMineSiblings;
+	public int getMineNeighbours(){
+		return mMineNeighbours;
 	}
 	
 	public int getRow() {

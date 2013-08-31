@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -33,25 +34,22 @@ public class Board extends JFrame implements ActionListener{
 		createButtons();
 		
 		setSize(calculateBoardSize());
-		
-		//temp dev code
-		for(MineButton button : mButtons){
-			button.setClicked(false);
-		}
 	}
 	
 	/**
 	 * Generates the board, placing all the mines.
-	 * @param exclude This position will not be a mine.
+	 * @param exclude This position or any of its neighbours will not be a mine.
 	 */
 	private void generateBoard(int exclude){
-		Set<Integer> mineButtons = generateMines(exclude);
+		List<Integer> excludes = getNeighbours(mButtons.get(exclude));
+		excludes.add(exclude);
+		Set<Integer> mineButtons = generateMines(excludes);
 		
 		for(int i=0; i<mButtons.size(); i++){
 			MineButton button = mButtons.get(i);
 			button.setIsMine(mineButtons.contains(i));
 		}
-		countMineSiblings();
+		countButtonsMineNeighbours();
 		mIsBoardGenerated = true;
 	}
 	
@@ -67,40 +65,38 @@ public class Board extends JFrame implements ActionListener{
 				add(button);
 			}
 		}
-		
-		
 	}
 	
-	private void countMineSiblings(){
+	private void countButtonsMineNeighbours(){
 		for(MineButton button : mButtons){
 			if(button.isMine()){
 				continue;
 			}
 			
-			ArrayList<Integer> siblings = getSiblings(button);
+			List<Integer> neighbors = getNeighbours(button);
 			
-			int mineSiblings = 0;
-			for(int siblingPos : siblings){
-				if(mButtons.get(siblingPos).isMine()){
-					mineSiblings++;
+			int mineNeighbours = 0;
+			for(int neighbourPos : neighbors){
+				if(mButtons.get(neighbourPos).isMine()){
+					mineNeighbours++;
 				}
 			}
-			button.setMineSiblings(mineSiblings);
+			button.setMineNeighbours(mineNeighbours);
 		}
 	}
 	
 	/**
 	 * Generates mine positions.
-	 * @param exclude This position will not be a mine.
+	 * @param excludes These positions will not be a mine.
 	 */
-	private Set<Integer> generateMines(int exclude){
+	private Set<Integer> generateMines(List<Integer> excludes){
 		Set<Integer> minePositions = new HashSet<Integer>();
 		Random rand = new Random();
 		
 		int nbrOfButtons = mRows * mColumns;
 		while (minePositions.size() < mMines) {
 			int randPos = rand.nextInt(nbrOfButtons);
-			if(randPos != exclude){
+			if(excludes == null || !excludes.contains(randPos)){
 				minePositions.add(randPos);
 			}
 		}
@@ -113,7 +109,7 @@ public class Board extends JFrame implements ActionListener{
 		Set<Integer> checkedPositions = new HashSet<Integer>();
 		checkedPositions.add(position);
 		
-		if(!button.isMine() && button.getMineSiblings() == 0){
+		if(!button.isMine() && button.getMineNeighbours() == 0){
 			chainMineButtonClick(position, checkedPositions);
 		}
 		
@@ -124,24 +120,22 @@ public class Board extends JFrame implements ActionListener{
 	
 	private void chainMineButtonClick(int position, Set<Integer> checkedPositions){
 		MineButton button = mButtons.get(position);
-		ArrayList<Integer> siblings = getSiblings(button);
-		for(int siblingPos : siblings){
-			if(checkedPositions.contains(siblingPos)){
+		List<Integer> neighbours = getNeighbours(button);
+		for(int neighbourPos : neighbours){
+			if(checkedPositions.contains(neighbourPos)){
 				continue;
 			}
-			checkedPositions.add(siblingPos);
-			MineButton siblingButton = mButtons.get(siblingPos);
+			checkedPositions.add(neighbourPos);
+			MineButton neighbourButton = mButtons.get(neighbourPos);
 			
-			if(siblingButton.getMineSiblings() == 0){
-				chainMineButtonClick(siblingPos, checkedPositions);
+			if(neighbourButton.getMineNeighbours() == 0){
+				chainMineButtonClick(neighbourPos, checkedPositions);
 			}
 			
 		}
 	}
 	
-	
-	
-	private ArrayList<Integer> getSiblings(MineButton button){
+	private List<Integer> getNeighbours(MineButton button){
 		int row = button.getRow();
 		int column = button.getColumn();
 		int pos = row*mColumns + column;
@@ -150,26 +144,26 @@ public class Board extends JFrame implements ActionListener{
 		boolean atRight = column == mColumns-1;
 		boolean atBottom = row == mRows-1;
 		
-		ArrayList<Integer> siblings = new ArrayList<Integer>();
+		ArrayList<Integer> neighbours = new ArrayList<Integer>();
 		
 		if(!atTop && !atLeft)
-			siblings.add(pos-mColumns-1);
+			neighbours.add(pos-mColumns-1);
 		if(!atTop)
-			siblings.add(pos-mColumns);
+			neighbours.add(pos-mColumns);
 		if(!atTop && !atRight)
-			siblings.add(pos-mColumns+1);
+			neighbours.add(pos-mColumns+1);
 		if(!atLeft)
-			siblings.add(pos-1);
+			neighbours.add(pos-1);
 		if(!atRight)
-			siblings.add(pos+1);
+			neighbours.add(pos+1);
 		if(!atBottom && !atLeft)
-			siblings.add(pos+mColumns-1);
+			neighbours.add(pos+mColumns-1);
 		if(!atBottom)
-			siblings.add(pos+mColumns);
+			neighbours.add(pos+mColumns);
 		if(!atBottom && !atRight)
-			siblings.add(pos+mColumns+1);
+			neighbours.add(pos+mColumns+1);
 		
-		return siblings;
+		return neighbours;
 	}
 	
 	private Dimension calculateBoardSize() {
