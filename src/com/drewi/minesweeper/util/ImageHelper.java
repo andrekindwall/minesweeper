@@ -33,9 +33,7 @@ public class ImageHelper {
 
 		SEVEN(RES_DIR + "seven.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
 
-		EIGHT(RES_DIR + "eight.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
-
-		NINE(RES_DIR + "nine.png", MineButton.getButtonSize(), MineButton.getButtonSize());
+		EIGHT(RES_DIR + "eight.png", MineButton.getButtonSize(), MineButton.getButtonSize());
 		
 		private String mPath;
 		private int mWidth;

@@ -30,9 +30,12 @@ public class Board extends JFrame implements ActionListener{
 
 		createButtons();
 		
-		generateMines();
-		
 		setSize(calculateBoardSize());
+		
+		//temp dev code
+		for(MineButton button : mButtons){
+			button.setClicked();
+		}
 	}
 	
 	private void createButtons(){
@@ -47,6 +50,54 @@ public class Board extends JFrame implements ActionListener{
 				mButtons.add(button);
 				add(button);
 			}
+		}
+		
+		countMineSiblings();
+	}
+	
+	private void countMineSiblings(){
+		MineButton button;
+		ArrayList<Integer> siblings = new ArrayList<Integer>();
+		boolean atTop;
+		boolean atLeft;
+		boolean atRight;
+		boolean atBottom;
+		for(int pos=0; pos<mButtons.size(); pos++){
+			button = mButtons.get(pos);
+			if(button.isMine()){
+				continue;
+			}
+			atTop = button.getRow() == 0;
+			atLeft = button.getColumn() == 0;
+			atRight = button.getColumn() == mColumns-1;
+			atBottom = button.getRow() == mRows-1;
+			
+			siblings.clear();
+
+			if(!atTop && !atLeft)
+				siblings.add(pos-mColumns-1);
+			if(!atTop)
+				siblings.add(pos-mColumns);
+			if(!atTop && !atRight)
+				siblings.add(pos-mColumns+1);
+			if(!atLeft)
+				siblings.add(pos-1);
+			if(!atRight)
+				siblings.add(pos+1);
+			if(!atBottom && !atLeft)
+				siblings.add(pos+mColumns-1);
+			if(!atBottom)
+				siblings.add(pos+mColumns);
+			if(!atBottom && !atRight)
+				siblings.add(pos+mColumns+1);
+			
+			int mineSiblings = 0;
+			for(int siblingPos : siblings){
+				if(mButtons.get(siblingPos).isMine()){
+					mineSiblings++;
+				}
+			}
+			button.setMineSiblings(mineSiblings);
 		}
 	}
 	
