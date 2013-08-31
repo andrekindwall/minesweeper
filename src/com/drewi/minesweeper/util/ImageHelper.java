@@ -35,9 +35,9 @@ public class ImageHelper {
 
 		EIGHT(RES_DIR + "eight.png", MineButton.getButtonSize(), MineButton.getButtonSize());
 		
-		private String mPath;
-		private int mWidth;
-		private int mHeight;
+		private final String mPath;
+		private final int mWidth;
+		private final int mHeight;
 		
 		private ImageProps(String path, int width, int height){
 			mPath = path;
