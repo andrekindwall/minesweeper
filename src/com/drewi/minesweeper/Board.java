@@ -53,12 +53,12 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 	
 	/**
 	 * Generates the board, placing all the mines.
-	 * @param exclude This position or any of its neighbours will not be a mine.
+	 * @param exclude This position or any of its neighbours will not be a bomb.
 	 */
 	private void generateBoard(int exclude){
 		List<Integer> excludes = getNeighbours(mButtons.get(exclude));
 		excludes.add(exclude);
-		Set<Integer> mineButtons = generateMines(excludes);
+		Set<Integer> mineButtons = generateBombs(excludes);
 		
 		for(int i=0; i<mButtons.size(); i++){
 			MineButton button = mButtons.get(i);
@@ -70,7 +70,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 	
 	private void countButtonsMineNeighbours(){
 		for(MineButton button : mButtons){
-			if(button.isMine()){
+			if(button.isBomb()){
 				continue;
 			}
 			
@@ -78,7 +78,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 			
 			int mineNeighbours = 0;
 			for(int neighbourPos : neighbors){
-				if(mButtons.get(neighbourPos).isMine()){
+				if(mButtons.get(neighbourPos).isBomb()){
 					mineNeighbours++;
 				}
 			}
@@ -88,21 +88,21 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 	
 	/**
 	 * Generates mine positions.
-	 * @param excludes These positions will not be a mine.
+	 * @param excludes These positions will not be a bomb.
 	 */
-	private Set<Integer> generateMines(List<Integer> excludes){
-		Set<Integer> minePositions = new HashSet<Integer>();
+	private Set<Integer> generateBombs(List<Integer> excludes){
+		Set<Integer> bombPositions = new HashSet<Integer>();
 		Random rand = new Random();
 		
 		int nbrOfButtons = mRows * mColumns;
-		while (minePositions.size() < mMines) {
+		while (bombPositions.size() < mMines) {
 			int randPos = rand.nextInt(nbrOfButtons);
 			if(excludes == null || !excludes.contains(randPos)){
-				minePositions.add(randPos);
+				bombPositions.add(randPos);
 			}
 		}
 		
-		return minePositions;
+		return bombPositions;
 	}
 	
 	private void clickedMineButton(MineButton button){
@@ -112,7 +112,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 		checkedPositions.add(position);
 		clickPositions.add(position);
 		
-		if(!button.isMine() && button.getMineNeighbours() == 0){
+		if(!button.isBomb() && button.getBombNeighbours() == 0){
 			chainMineButtonClick(position, checkedPositions, clickPositions);
 		}
 		
@@ -120,7 +120,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 			mButtons.get(clickPosition).setClicked(true);
 		}
 		
-		if(mListener != null && button.isMine()){
+		if(mListener != null && button.isBomb()){
 			mListener.gameOver();
 			mGameOver = true;
 		}
@@ -138,7 +138,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 			
 			if(neighbourButton.isClickable()){
 				clickPositions.add(neighbourPos);
-				if(neighbourButton.getMineNeighbours() == 0){
+				if(neighbourButton.getBombNeighbours() == 0){
 					chainMineButtonClick(neighbourPos, checkedPositions, clickPositions);
 				}
 			}
@@ -208,8 +208,45 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 
 	@Override
 	public void onDualClick(MineButton button) {
-		// TODO Auto-generated method stub
-		
+		if(!mIsBoardGenerated || mGameOver || button.isClickable()){
+			return;
+		}
+		Set<Integer> checkedPositions = new HashSet<Integer>();
+		Set<Integer> clickPositions = new HashSet<Integer>();
+		List<Integer> neighbours = getNeighbours(button);
+		int flags = 0;
+		for(int neighbourPos : neighbours){
+			if(mButtons.get(neighbourPos).isFlagged()){
+				flags++;
+				checkedPositions.add(neighbourPos);
+			}
+		}
+		if(button.getBombNeighbours() == flags){
+			checkedPositions.add(button.getRow()*mColumns+button.getColumn());
+			clickPositions.add(button.getRow()*mColumns+button.getColumn());
+			
+			for(int neighbourPos : neighbours){
+				MineButton neighbourButton = mButtons.get(neighbourPos);
+				if(neighbourButton.getBombNeighbours() == 0 && neighbourButton.isClickable()){
+					if(neighbourButton.isBomb()){
+						clickPositions.add(neighbourPos);
+						mGameOver = true;
+					} else {
+						chainMineButtonClick(neighbourPos, checkedPositions, clickPositions);
+					}
+				} else if(!neighbourButton.isFlagged()){
+					clickPositions.add(neighbourPos);
+				}
+			}
+			
+			for(int clickPosition : clickPositions){
+				mButtons.get(clickPosition).setClicked(true);
+			}
+			
+			if(mListener != null && mGameOver){
+				mListener.gameOver();
+			}
+		}
 	}
 	
 }

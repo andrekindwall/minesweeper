@@ -9,7 +9,7 @@ public class MainClass implements GameFinishedListener {
 	
 	private static final int ROWS = 16;
 	private static final int COLUMNS = 30;
-	private static final int MINES = 70;
+	private static final int MINES = 99;
 
 	private Board mBoard;
 	

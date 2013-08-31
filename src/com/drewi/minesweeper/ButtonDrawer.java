@@ -21,7 +21,6 @@ public class ButtonDrawer extends Container implements MouseListener, MouseMotio
 
 	private MinesweeperMouseListener mListener;
 
-	private int mRows;
 	private int mColumns;
 	
 	private boolean mLeftButtonPressed;
@@ -35,7 +34,6 @@ public class ButtonDrawer extends Container implements MouseListener, MouseMotio
 	}
 
 	public List<MineButton> createButtons(int rows, int columns) {
-		mRows = rows;
 		mColumns = columns;
 		mButtons = new ArrayList<MineButton>();
 		for (int row = 0; row < rows; row++) {
@@ -60,18 +58,21 @@ public class ButtonDrawer extends Container implements MouseListener, MouseMotio
 
 	@Override
 	public void mouseEntered(MouseEvent event) {
-		
+		//nothing
 	}
 
 	@Override
 	public void mouseExited(MouseEvent event) {
-
+		//nothing
 	}
 
 	@Override
 	public void mousePressed(MouseEvent event) {
 		if(event.isMetaDown()){
 			mRightButtonPressed = true;
+			if(mListener != null && !mLeftButtonPressed){
+				mListener.onRightClick(mButtons.get(buttonIndexAtCoordinates(event.getX(), event.getY())));
+			}
 		} else {
 			mLeftButtonPressed = true;
 		}
@@ -83,9 +84,7 @@ public class ButtonDrawer extends Container implements MouseListener, MouseMotio
 			try{
 				if (mLeftButtonPressed && !mRightButtonPressed) {
 					mListener.onLeftClick(mButtons.get(buttonIndexAtCoordinates(event.getX(), event.getY())));
-				} else if (!mLeftButtonPressed && mRightButtonPressed) {
-					mListener.onRightClick(mButtons.get(buttonIndexAtCoordinates(event.getX(), event.getY())));
-				} else if (mLeftButtonPressed && mRightButtonPressed) {
+				} if (mLeftButtonPressed && mRightButtonPressed) {
 					mListener.onDualClick(mButtons.get(buttonIndexAtCoordinates(event.getX(), event.getY())));
 				}
 			} catch(IndexOutOfBoundsException e){

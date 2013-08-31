@@ -23,8 +23,8 @@ public class MineButton extends JLabel {
 	private int mColumn;
 
 	private boolean mIsClicked;
-	private boolean mIsMine;
-	private int mMineNeighbours;
+	private boolean mIsBomb;
+	private int mBombNeighbours;
 
 	private ImageProps mClickedImageProps;
 	private ImageProps mUnclickedImageProps;
@@ -49,7 +49,7 @@ public class MineButton extends JLabel {
 	}
 	
 	public void setMineNeighbours(int mineNeighbours){
-		mMineNeighbours = mineNeighbours;
+		mBombNeighbours = mineNeighbours;
 		
 		switch(mineNeighbours){
 		case 0:
@@ -100,6 +100,10 @@ public class MineButton extends JLabel {
 		return !mIsClicked && mFlagState != FLAG_FLAG;
 	}
 	
+	public boolean isFlagged(){
+		return mFlagState == FLAG_FLAG;
+	}
+	
 	public void setHovering(boolean hovering){
 		if(!mIsClicked){
 			mHoverView.setVisible(hovering);
@@ -131,18 +135,18 @@ public class MineButton extends JLabel {
 	}
 	
 	public void setIsMine(boolean isMine) {
-		mIsMine = isMine;
-		if(mIsMine){
+		mIsBomb = isMine;
+		if(mIsBomb){
 			mClickedImageProps = ImageProps.BOMB;
 		}
 	}
 	
-	public boolean isMine() {
-		return mIsMine;
+	public boolean isBomb() {
+		return mIsBomb;
 	}
 	
-	public int getMineNeighbours(){
-		return mMineNeighbours;
+	public int getBombNeighbours(){
+		return mBombNeighbours;
 	}
 	
 	public int getRow() {
