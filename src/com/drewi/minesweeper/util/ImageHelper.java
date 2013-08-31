@@ -13,27 +13,37 @@ public class ImageHelper {
 
 	public enum ImageProps{
 
-		UNCLICKED(RES_DIR + "unclicked.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		UNCLICKED(RES_DIR + "unclicked.png", MineButton.SIZE, MineButton.SIZE),
 
-		BOMB(RES_DIR + "bomb.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		BOMB(RES_DIR + "bomb.png", MineButton.SIZE, MineButton.SIZE),
 
-		ZERO(RES_DIR + "zero.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		FLAG(RES_DIR + "flag.png", MineButton.SIZE, MineButton.SIZE),
 
-		ONE(RES_DIR + "one.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		FLAG_HOVER(RES_DIR + "flaghover.png", MineButton.SIZE, MineButton.SIZE),
 
-		TWO(RES_DIR + "two.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		HOVER(RES_DIR + "hover.png", MineButton.SIZE, MineButton.SIZE),
 
-		THREE(RES_DIR + "three.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		QUESTIONMARK(RES_DIR + "questionmark.png", MineButton.SIZE, MineButton.SIZE),
+		
+		QUESTIONMARK_HOVER(RES_DIR + "questionmarkhover.png", MineButton.SIZE, MineButton.SIZE),
 
-		FOUR(RES_DIR + "four.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		ZERO(RES_DIR + "zero.png", MineButton.SIZE, MineButton.SIZE),
 
-		FIVE(RES_DIR + "five.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		ONE(RES_DIR + "one.png", MineButton.SIZE, MineButton.SIZE),
 
-		SIX(RES_DIR + "six.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		TWO(RES_DIR + "two.png", MineButton.SIZE, MineButton.SIZE),
 
-		SEVEN(RES_DIR + "seven.png", MineButton.getButtonSize(), MineButton.getButtonSize()),
+		THREE(RES_DIR + "three.png", MineButton.SIZE, MineButton.SIZE),
 
-		EIGHT(RES_DIR + "eight.png", MineButton.getButtonSize(), MineButton.getButtonSize());
+		FOUR(RES_DIR + "four.png", MineButton.SIZE, MineButton.SIZE),
+
+		FIVE(RES_DIR + "five.png", MineButton.SIZE, MineButton.SIZE),
+
+		SIX(RES_DIR + "six.png", MineButton.SIZE, MineButton.SIZE),
+
+		SEVEN(RES_DIR + "seven.png", MineButton.SIZE, MineButton.SIZE),
+
+		EIGHT(RES_DIR + "eight.png", MineButton.SIZE, MineButton.SIZE);
 		
 		private final String mPath;
 		private final int mWidth;

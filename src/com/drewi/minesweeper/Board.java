@@ -1,8 +1,6 @@
 package com.drewi.minesweeper;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +9,9 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 
-public class Board extends JFrame implements ActionListener{
+import com.drewi.minesweeper.ButtonDrawer.MinesweeperMouseListener;
+
+public class Board extends JFrame implements MinesweeperMouseListener{
 	
 	public interface GameFinishedListener{
 		public void gameOver();
@@ -19,7 +19,7 @@ public class Board extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 9148170605818301711L;
 	
-	private ArrayList<MineButton> mButtons;
+	private List<MineButton> mButtons;
 
 	private int mRows;
 	private int mColumns;
@@ -38,9 +38,13 @@ public class Board extends JFrame implements ActionListener{
 		mColumns = columns;
 		mMines = mines;
 
-		createButtons();
+		ButtonDrawer drawer = new ButtonDrawer();
+		mButtons = drawer.createButtons(mRows, mColumns);
+		drawer.setMinesweeperMouseListener(this);
+		add(drawer);
 		
-		setSize(calculateBoardSize());
+		setSize(calculateBoardSize(-10));
+		drawer.setSize(calculateBoardSize(0));
 	}
 	
 	public void setGameFinishedListener(GameFinishedListener listener){
@@ -62,20 +66,6 @@ public class Board extends JFrame implements ActionListener{
 		}
 		countButtonsMineNeighbours();
 		mIsBoardGenerated = true;
-	}
-	
-	private void createButtons(){
-		mButtons = new ArrayList<>();
-		
-		for(int row=0; row<mRows; row++){
-			for(int column=0; column<mColumns; column++){
-				MineButton button = new MineButton(row, column);
-				button.addActionListener(this);
-				
-				mButtons.add(button);
-				add(button);
-			}
-		}
 	}
 	
 	private void countButtonsMineNeighbours(){
@@ -182,11 +172,10 @@ public class Board extends JFrame implements ActionListener{
 		return neighbours;
 	}
 	
-	private Dimension calculateBoardSize() {
-		int buttonSize = MineButton.getButtonSize();
-		int width = mColumns*buttonSize;
-		int height = mRows*buttonSize;
-		return new Dimension(width - 10, height - 10);
+	private Dimension calculateBoardSize(int offset) {
+		int width = mColumns*MineButton.SIZE;
+		int height = mRows*MineButton.SIZE;
+		return new Dimension(width + offset, height + offset);
 	}
 	
 	@Override
@@ -196,15 +185,26 @@ public class Board extends JFrame implements ActionListener{
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent event) {
-		MineButton button = (MineButton) event.getSource();
+	public void onLeftClick(MineButton button) {
 		if(!mIsBoardGenerated){
 			generateBoard(button.getRow()*mColumns + button.getColumn());
 		}
-		if(!mGameOver && !button.isClicked()){
+		if(!mGameOver && button.isClickable()){
 			clickedMineButton(button);
 		}
 	}
-	
 
+	@Override
+	public void onRightClick(MineButton button) {
+		if(!mGameOver && !button.isClicked()){
+			button.toggleFlag();
+		}
+	}
+
+	@Override
+	public void onDualClick(MineButton button) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
