@@ -15,6 +15,7 @@ public class MineButton extends JButton {
 	private int mRow;
 	private int mColumn;
 
+	private boolean mIsClicked;
 	private boolean mIsMine;
 	private int mMineSiblings;
 	
@@ -64,8 +65,9 @@ public class MineButton extends JButton {
 		}
 	}
 	
-	public void setClicked() {
-		Icon icon = ImageHelper.getScaledIcon(getClass(), mClickedImageProps);
+	public void setClicked(boolean clicked) {
+		mIsClicked = clicked;
+		Icon icon = ImageHelper.getScaledIcon(getClass(), mIsClicked ? mClickedImageProps : ImageProps.UNCLICKED);
 		setIcon(icon);
 	}
 	
@@ -78,6 +80,10 @@ public class MineButton extends JButton {
 	
 	public boolean isMine() {
 		return mIsMine;
+	}
+	
+	public int getMineSiblings(){
+		return mMineSiblings;
 	}
 	
 	public int getRow() {

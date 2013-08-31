@@ -20,6 +20,8 @@ public class Board extends JFrame implements ActionListener{
 	private int mColumns;
 	private int mMines;
 	
+	private boolean mIsBoardGenerated;
+	
 	public Board(int rows, int columns, int mines) {
 		super("Minesweeper");
 		setLayout(null);
@@ -34,62 +36,48 @@ public class Board extends JFrame implements ActionListener{
 		
 		//temp dev code
 		for(MineButton button : mButtons){
-			button.setClicked();
+			button.setClicked(false);
 		}
+	}
+	
+	/**
+	 * Generates the board, placing all the mines.
+	 * @param exclude This position will not be a mine.
+	 */
+	private void generateBoard(int exclude){
+		Set<Integer> mineButtons = generateMines(exclude);
+		
+		for(int i=0; i<mButtons.size(); i++){
+			MineButton button = mButtons.get(i);
+			button.setIsMine(mineButtons.contains(i));
+		}
+		countMineSiblings();
+		mIsBoardGenerated = true;
 	}
 	
 	private void createButtons(){
 		mButtons = new ArrayList<>();
-		Set<Integer> mineButtons = generateMines();
 		
 		for(int row=0; row<mRows; row++){
 			for(int column=0; column<mColumns; column++){
 				MineButton button = new MineButton(row, column);
-				button.setIsMine(mineButtons.contains(row*mColumns + column));
+				button.addActionListener(this);
 				
 				mButtons.add(button);
 				add(button);
 			}
 		}
 		
-		countMineSiblings();
+		
 	}
 	
 	private void countMineSiblings(){
-		MineButton button;
-		ArrayList<Integer> siblings = new ArrayList<Integer>();
-		boolean atTop;
-		boolean atLeft;
-		boolean atRight;
-		boolean atBottom;
-		for(int pos=0; pos<mButtons.size(); pos++){
-			button = mButtons.get(pos);
+		for(MineButton button : mButtons){
 			if(button.isMine()){
 				continue;
 			}
-			atTop = button.getRow() == 0;
-			atLeft = button.getColumn() == 0;
-			atRight = button.getColumn() == mColumns-1;
-			atBottom = button.getRow() == mRows-1;
 			
-			siblings.clear();
-
-			if(!atTop && !atLeft)
-				siblings.add(pos-mColumns-1);
-			if(!atTop)
-				siblings.add(pos-mColumns);
-			if(!atTop && !atRight)
-				siblings.add(pos-mColumns+1);
-			if(!atLeft)
-				siblings.add(pos-1);
-			if(!atRight)
-				siblings.add(pos+1);
-			if(!atBottom && !atLeft)
-				siblings.add(pos+mColumns-1);
-			if(!atBottom)
-				siblings.add(pos+mColumns);
-			if(!atBottom && !atRight)
-				siblings.add(pos+mColumns+1);
+			ArrayList<Integer> siblings = getSiblings(button);
 			
 			int mineSiblings = 0;
 			for(int siblingPos : siblings){
@@ -101,16 +89,87 @@ public class Board extends JFrame implements ActionListener{
 		}
 	}
 	
-	private Set<Integer> generateMines(){
+	/**
+	 * Generates mine positions.
+	 * @param exclude This position will not be a mine.
+	 */
+	private Set<Integer> generateMines(int exclude){
 		Set<Integer> minePositions = new HashSet<Integer>();
 		Random rand = new Random();
 		
 		int nbrOfButtons = mRows * mColumns;
 		while (minePositions.size() < mMines) {
-			minePositions.add(rand.nextInt(nbrOfButtons));
+			int randPos = rand.nextInt(nbrOfButtons);
+			if(randPos != exclude){
+				minePositions.add(randPos);
+			}
 		}
 		
 		return minePositions;
+	}
+	
+	private void clickedMineButton(MineButton button){
+		int position = button.getRow()*mColumns + button.getColumn();
+		Set<Integer> checkedPositions = new HashSet<Integer>();
+		checkedPositions.add(position);
+		
+		if(!button.isMine() && button.getMineSiblings() == 0){
+			chainMineButtonClick(position, checkedPositions);
+		}
+		
+		for(int checkedPosition : checkedPositions){
+			mButtons.get(checkedPosition).setClicked(true);
+		}
+	}
+	
+	private void chainMineButtonClick(int position, Set<Integer> checkedPositions){
+		MineButton button = mButtons.get(position);
+		ArrayList<Integer> siblings = getSiblings(button);
+		for(int siblingPos : siblings){
+			if(checkedPositions.contains(siblingPos)){
+				continue;
+			}
+			checkedPositions.add(siblingPos);
+			MineButton siblingButton = mButtons.get(siblingPos);
+			
+			if(siblingButton.getMineSiblings() == 0){
+				chainMineButtonClick(siblingPos, checkedPositions);
+			}
+			
+		}
+	}
+	
+	
+	
+	private ArrayList<Integer> getSiblings(MineButton button){
+		int row = button.getRow();
+		int column = button.getColumn();
+		int pos = row*mColumns + column;
+		boolean atTop = row == 0;
+		boolean atLeft = column == 0;
+		boolean atRight = column == mColumns-1;
+		boolean atBottom = row == mRows-1;
+		
+		ArrayList<Integer> siblings = new ArrayList<Integer>();
+		
+		if(!atTop && !atLeft)
+			siblings.add(pos-mColumns-1);
+		if(!atTop)
+			siblings.add(pos-mColumns);
+		if(!atTop && !atRight)
+			siblings.add(pos-mColumns+1);
+		if(!atLeft)
+			siblings.add(pos-1);
+		if(!atRight)
+			siblings.add(pos+1);
+		if(!atBottom && !atLeft)
+			siblings.add(pos+mColumns-1);
+		if(!atBottom)
+			siblings.add(pos+mColumns);
+		if(!atBottom && !atRight)
+			siblings.add(pos+mColumns+1);
+		
+		return siblings;
 	}
 	
 	private Dimension calculateBoardSize() {
@@ -129,6 +188,10 @@ public class Board extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		MineButton button = (MineButton) event.getSource();
+		if(!mIsBoardGenerated){
+			generateBoard(button.getRow()*mColumns + button.getColumn());
+		}
+		clickedMineButton(button);
 	}
 	
 
