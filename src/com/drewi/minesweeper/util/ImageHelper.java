@@ -19,13 +19,7 @@ public class ImageHelper {
 
 		FLAG(RES_DIR + "flag.png", MineButton.SIZE, MineButton.SIZE),
 
-		FLAG_HOVER(RES_DIR + "flaghover.png", MineButton.SIZE, MineButton.SIZE),
-
-		HOVER(RES_DIR + "hover.png", MineButton.SIZE, MineButton.SIZE),
-
 		QUESTIONMARK(RES_DIR + "questionmark.png", MineButton.SIZE, MineButton.SIZE),
-		
-		QUESTIONMARK_HOVER(RES_DIR + "questionmarkhover.png", MineButton.SIZE, MineButton.SIZE),
 
 		ZERO(RES_DIR + "zero.png", MineButton.SIZE, MineButton.SIZE),
 

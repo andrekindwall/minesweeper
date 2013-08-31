@@ -1,5 +1,8 @@
 package com.drewi.minesweeper;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
@@ -25,8 +28,8 @@ public class MineButton extends JLabel {
 
 	private ImageProps mClickedImageProps;
 	private ImageProps mUnclickedImageProps;
-	private ImageProps mHoverImageProps;
 	
+	private TranslucentView mHoverView;
 	private int mFlagState = FLAG_NONE;
 	
 	public MineButton(int row, int column) {
@@ -34,9 +37,13 @@ public class MineButton extends JLabel {
 		mColumn = column;
 		
 		mUnclickedImageProps = ImageProps.UNCLICKED;
-		mHoverImageProps = ImageProps.HOVER;
 		
 		setBounds(mColumn*SIZE, mRow*SIZE, SIZE, SIZE);
+		
+		mHoverView = new TranslucentView();
+		mHoverView.setBounds(0, 0, SIZE, SIZE);
+		mHoverView.setVisible(false);
+		add(mHoverView);
 		
 		setClicked(false);
 	}
@@ -82,6 +89,7 @@ public class MineButton extends JLabel {
 		mIsClicked = clicked;
 		Icon icon = ImageHelper.getScaledIcon(getClass(), mIsClicked ? mClickedImageProps : mUnclickedImageProps);
 		setIcon(icon);
+		mHoverView.setVisible(false);
 	}
 	
 	public boolean isClicked(){
@@ -94,8 +102,7 @@ public class MineButton extends JLabel {
 	
 	public void setHovering(boolean hovering){
 		if(!mIsClicked){
-			Icon icon = ImageHelper.getScaledIcon(getClass(), hovering ? mHoverImageProps : mUnclickedImageProps);
-			setIcon(icon);
+			mHoverView.setVisible(hovering);
 		}
 	}
 	
@@ -109,15 +116,12 @@ public class MineButton extends JLabel {
 			switch(mFlagState){
 			case FLAG_NONE:
 				mUnclickedImageProps = ImageProps.UNCLICKED;
-				mHoverImageProps = ImageProps.HOVER;
 				break;
 			case FLAG_FLAG:
 				mUnclickedImageProps = ImageProps.FLAG;
-				mHoverImageProps = ImageProps.FLAG_HOVER;
 				break;
 			case FLAG_QUESTIONMARK:
 				mUnclickedImageProps = ImageProps.QUESTIONMARK;
-				mHoverImageProps = ImageProps.QUESTIONMARK_HOVER;
 				break;
 			}
 			
@@ -147,6 +151,22 @@ public class MineButton extends JLabel {
 	
 	public int getColumn() {
 		return mColumn;
+	}
+	
+	public class TranslucentView extends JLabel{
+		private static final long serialVersionUID = 2192667698664931117L;
+
+		public TranslucentView(){
+	        super();
+	        setLayout(null);
+	    }
+	    
+	    public void paintComponent(Graphics g){
+	        super.paintComponent(g);
+	        Color ppColor = new Color(255, 255, 255, 70); //r,g,b,alpha
+	        g.setColor(ppColor);
+	        g.fillRect(0,0,SIZE,SIZE);
+	    }    
 	}
 	
 }

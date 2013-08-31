@@ -108,14 +108,16 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 	private void clickedMineButton(MineButton button){
 		int position = button.getRow()*mColumns + button.getColumn();
 		Set<Integer> checkedPositions = new HashSet<Integer>();
+		Set<Integer> clickPositions = new HashSet<Integer>();
 		checkedPositions.add(position);
+		clickPositions.add(position);
 		
 		if(!button.isMine() && button.getMineNeighbours() == 0){
-			chainMineButtonClick(position, checkedPositions);
+			chainMineButtonClick(position, checkedPositions, clickPositions);
 		}
 		
-		for(int checkedPosition : checkedPositions){
-			mButtons.get(checkedPosition).setClicked(true);
+		for(int clickPosition : clickPositions){
+			mButtons.get(clickPosition).setClicked(true);
 		}
 		
 		if(mListener != null && button.isMine()){
@@ -124,7 +126,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 		}
 	}
 	
-	private void chainMineButtonClick(int position, Set<Integer> checkedPositions){
+	private void chainMineButtonClick(int position, Set<Integer> checkedPositions, Set<Integer> clickPositions){
 		MineButton button = mButtons.get(position);
 		List<Integer> neighbours = getNeighbours(button);
 		for(int neighbourPos : neighbours){
@@ -134,8 +136,11 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 			checkedPositions.add(neighbourPos);
 			MineButton neighbourButton = mButtons.get(neighbourPos);
 			
-			if(neighbourButton.getMineNeighbours() == 0){
-				chainMineButtonClick(neighbourPos, checkedPositions);
+			if(neighbourButton.isClickable()){
+				clickPositions.add(neighbourPos);
+				if(neighbourButton.getMineNeighbours() == 0){
+					chainMineButtonClick(neighbourPos, checkedPositions, clickPositions);
+				}
 			}
 			
 		}
