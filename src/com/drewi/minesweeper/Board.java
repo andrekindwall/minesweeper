@@ -20,6 +20,7 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 	private static final long serialVersionUID = 9148170605818301711L;
 	
 	private List<MineButton> mButtons;
+	private Set<Integer> mBombPositions;
 
 	private int mRows;
 	private int mColumns;
@@ -86,23 +87,31 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 		}
 	}
 	
+	public void revealAllBombs(){
+		for(int position : mBombPositions){
+			if(mButtons.get(position).isBomb()){
+				mButtons.get(position).setClicked(true);
+			}
+		}
+	}
+	
 	/**
 	 * Generates mine positions.
 	 * @param excludes These positions will not be a bomb.
 	 */
 	private Set<Integer> generateBombs(List<Integer> excludes){
-		Set<Integer> bombPositions = new HashSet<Integer>();
+		mBombPositions = new HashSet<Integer>();
 		Random rand = new Random();
 		
 		int nbrOfButtons = mRows * mColumns;
-		while (bombPositions.size() < mMines) {
+		while (mBombPositions.size() < mMines) {
 			int randPos = rand.nextInt(nbrOfButtons);
 			if(excludes == null || !excludes.contains(randPos)){
-				bombPositions.add(randPos);
+				mBombPositions.add(randPos);
 			}
 		}
 		
-		return bombPositions;
+		return mBombPositions;
 	}
 	
 	private void clickedMineButton(MineButton button){

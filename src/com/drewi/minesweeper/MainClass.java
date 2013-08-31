@@ -28,6 +28,7 @@ public class MainClass implements GameFinishedListener {
 
 	@Override
 	public void gameOver() {
+		mBoard.revealAllBombs();
 		JOptionPane.showMessageDialog(null, "Game Over");
 	}
 	

@@ -1,6 +1,8 @@
 package com.drewi.minesweeper.util;
 
 import java.awt.Image;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -10,6 +12,8 @@ import com.drewi.minesweeper.MineButton;
 public class ImageHelper {
 	
 	private static final String RES_DIR = "images/";
+	
+	private static Map<ImageProps, Icon> mImages = new HashMap<ImageProps, Icon>();
 
 	public enum ImageProps{
 
@@ -63,10 +67,14 @@ public class ImageHelper {
 	}
 	
 	public static Icon getScaledIcon(Class<?> oclass, ImageProps imgProps){
-		ImageIcon origIcon = new ImageIcon(oclass.getResource(imgProps.getPath()));
-		Image img = origIcon.getImage();
-		Image newimg = img.getScaledInstance(imgProps.getWidth(), imgProps.getHeight(), Image.SCALE_SMOOTH) ;  
-		return new ImageIcon(newimg);
+		if(!mImages.containsKey(imgProps)){
+			ImageIcon origIcon = new ImageIcon(oclass.getResource(imgProps.getPath()));
+			Image img = origIcon.getImage();
+			Image newimg = img.getScaledInstance(imgProps.getWidth(), imgProps.getHeight(), Image.SCALE_SMOOTH) ;
+			mImages.put(imgProps, new ImageIcon(newimg));
+		}
+		
+		return mImages.get(imgProps);
 	}
 	
 }
