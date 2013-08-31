@@ -1,8 +1,10 @@
 package com.drewi.minesweeper;
 
-import java.awt.Color;
-
+import javax.swing.Icon;
 import javax.swing.JButton;
+
+import com.drewi.minesweeper.util.ImageHelper;
+import com.drewi.minesweeper.util.ImageHelper.ImageProps;
 
 public class MineButton extends JButton {
 
@@ -24,7 +26,8 @@ public class MineButton extends JButton {
 	
 	public void setIsMine(boolean isMine) {
 		mIsMine = isMine;
-		setBackground(isMine ? Color.RED : Color.GREEN);
+		Icon image = ImageHelper.getScaledIcon(getClass(), isMine ? ImageProps.BOMB : ImageProps.ZERO);
+		setIcon(image);
 	}
 	
 	public int getRow() {

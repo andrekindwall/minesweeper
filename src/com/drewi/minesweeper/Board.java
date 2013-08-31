@@ -66,7 +66,7 @@ public class Board extends JFrame implements ActionListener{
 		int buttonSize = MineButton.getButtonSize();
 		int width = mColumns*buttonSize;
 		int height = mRows*buttonSize;
-		return new Dimension(width, height);
+		return new Dimension(width - 10, height - 10);
 	}
 	
 	@Override

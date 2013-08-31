@@ -18,6 +18,7 @@ public class MainClass {
 	private void initGui() {
 		mBoard = new Board(ROWS, COLUMNS, MINES);
 		mBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mBoard.setResizable(false);
 		mBoard.setVisible(true);
 	}
 	
