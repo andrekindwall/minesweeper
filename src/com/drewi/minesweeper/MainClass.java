@@ -3,6 +3,10 @@ package com.drewi.minesweeper;
 import javax.swing.JFrame;
 
 public class MainClass {
+	
+	private static final int ROWS = 16;
+	private static final int COLUMNS = 30;
+	private static final int MINES = 99;
 
 	private Board mBoard;
 	
@@ -12,9 +16,11 @@ public class MainClass {
 	}
 	
 	private void initGui() {
-		mBoard = new Board();
+		int buttonSize = MineButton.getButtonSize();
+		
+		mBoard = new Board(ROWS, COLUMNS, MINES);
 		mBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mBoard.setSize(600, 450);
+		mBoard.setSize(COLUMNS*buttonSize, ROWS*buttonSize);
 		mBoard.setVisible(true);
 	}
 	
