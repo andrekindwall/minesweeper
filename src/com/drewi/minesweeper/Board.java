@@ -238,12 +238,15 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 				MineButton neighbourButton = mButtons.get(neighbourPos);
 				if(neighbourButton.getBombNeighbours() == 0 && neighbourButton.isClickable()){
 					if(neighbourButton.isBomb()){
+						checkedPositions.add(neighbourPos);
 						clickPositions.add(neighbourPos);
 						mGameOver = true;
 					} else {
+						clickPositions.add(neighbourPos);
 						chainMineButtonClick(neighbourPos, checkedPositions, clickPositions);
 					}
 				} else if(!neighbourButton.isFlagged()){
+					checkedPositions.add(neighbourPos);
 					clickPositions.add(neighbourPos);
 				}
 			}
