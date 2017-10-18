@@ -1,2 +1,5 @@
 minesweeper
 ===========
+
+*Language
+Java project
