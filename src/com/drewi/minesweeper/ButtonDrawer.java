@@ -70,7 +70,7 @@ public class ButtonDrawer extends Container implements MouseListener, MouseMotio
 	public void mousePressed(MouseEvent event) {
 		if(event.isMetaDown()){
 			mRightButtonPressed = true;
-			if(mListener != null && !mLeftButtonPressed){
+			if(mListener != null && !mLeftButtonPressed) {
 				mListener.onRightClick(mButtons.get(buttonIndexAtCoordinates(event.getX(), event.getY())));
 			}
 		} else {
