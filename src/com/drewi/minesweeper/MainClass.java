@@ -7,9 +7,9 @@ import com.drewi.minesweeper.Board.GameFinishedListener;
 
 public class MainClass implements GameFinishedListener {
 	
-	private static final int ROWS = 16;
-	private static final int COLUMNS = 30;
-	private static final int MINES = 99;
+	private static final int ROWS = 10;
+	private static final int COLUMNS = 10;
+	private static final int MINES = 10;
 
 	private Board mBoard;
 	
