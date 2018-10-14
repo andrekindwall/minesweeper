@@ -78,8 +78,8 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 			List<Integer> neighbors = getNeighbours(button);
 			
 			int mineNeighbours = 0;
-			for(int neighbourPos : neighbors){
-				if(mButtons.get(neighbourPos).isBomb()){
+			for(int neighbourPos : neighbors) {
+				if(mButtons.get(neighbourPos).isBomb()) {
 					mineNeighbours++;
 				}
 			}
@@ -88,8 +88,8 @@ public class Board extends JFrame implements MinesweeperMouseListener{
 	}
 	
 	public void revealAllBombs(){
-		for(int position : mBombPositions){
-			if(mButtons.get(position).isBomb()){
+		for(int position : mBombPositions) {
+			if(mButtons.get(position).isBomb()) {
 				mButtons.get(position).setClicked(true);
 			}
 		}
